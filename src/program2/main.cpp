@@ -13,7 +13,7 @@ bool initialize_winsock() {
    WSADATA wsa_data;
    int result = WSAStartup(MAKEWORD(2, 2), &wsa_data);
    if (result != 0) {
-      std::cerr << "Ошибка: не удалось инициализировать Winsock. Код ошибки: " << result << std::endl;
+      std::cout << "Ошибка: не удалось инициализировать Winsock. Код ошибки: " << result << std::endl;
       return false;
    }
    return true;
@@ -28,7 +28,7 @@ int main()
 
    SOCKET server_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
    if (server_socket == INVALID_SOCKET) {
-      std::cerr << "Ошибка: не удалось создать сокет. Код ошибки: " << WSAGetLastError() << std::endl;
+      std::cout << "Ошибка: не удалось создать сокет. Код ошибки: " << WSAGetLastError() << std::endl;
       WSACleanup();
       return 1;
    }
@@ -39,14 +39,14 @@ int main()
    server_address.sin_addr.s_addr = INADDR_ANY;
 
    if (bind(server_socket, (sockaddr*)&server_address, sizeof(server_address)) == SOCKET_ERROR) {
-      std::cerr << "Ошибка: не удалось привязать сокет. Код ошибки: " << WSAGetLastError() << std::endl;
+      std::cout << "Ошибка: не удалось привязать сокет. Код ошибки: " << WSAGetLastError() << std::endl;
       closesocket(server_socket);
       WSACleanup();
       return 1;
    }
 
    if (listen(server_socket, SOMAXCONN) == SOCKET_ERROR) {
-      std::cerr << "Ошибка: не удалось начать прослушивание. Код ошибки: " << WSAGetLastError() << std::endl;
+      std::cout << "Ошибка: не удалось начать прослушивание. Код ошибки: " << WSAGetLastError() << std::endl;
       closesocket(server_socket);
       WSACleanup();
       return 1;
@@ -58,7 +58,7 @@ int main()
 
       client_socket = accept(server_socket, nullptr, nullptr);
       if (client_socket == INVALID_SOCKET) {
-         std::cerr << "Ошибка: не удалось принять подключение. Код ошибки: " << WSAGetLastError() << std::endl;
+         std::cout << "Ошибка: не удалось принять подключение. Код ошибки: " << WSAGetLastError() << std::endl;
          closesocket(server_socket);
          WSACleanup();
          return 1;
@@ -71,7 +71,7 @@ int main()
          memset(buffer, 0, BUFFER_SIZE);
          int bytes_received = recv(client_socket, buffer, BUFFER_SIZE - 1, 0);
          if (bytes_received == SOCKET_ERROR) {
-            std::cerr << "Ошибка: не удалось получить данные. Код ошибки: " << WSAGetLastError() << std::endl;
+            std::cout << "Ошибка: не удалось получить данные. Код ошибки: " << WSAGetLastError() << std::endl;
             break;
          }
          else if (bytes_received == 0) {

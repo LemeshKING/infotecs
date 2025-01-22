@@ -24,7 +24,7 @@ bool initialize_winsock()
    int result = WSAStartup(MAKEWORD(2, 2), &wsa_data);
    if (result != 0) {
       std::lock_guard<std::mutex> console_lock(console_mutex);
-      std::cerr << "Ошибка: не удалось инициализировать Winsock. Код ошибки: " << result << std::endl;
+      std::cout << "Ошибка: не удалось инициализировать Winsock. Код ошибки: " << result << std::endl;
       return false;
    }
    return true;
@@ -47,6 +47,7 @@ void input_thread()
       if (input.length() > 64 || !std::all_of(input.begin(), input.end(), ::isdigit))
       {
          std::cout << "Ошибка: строка должна состоять только из цифр и быть не длиннее 64 символов." << std::endl;
+         console_mutex.unlock();
          continue;
       }
       console_mutex.unlock();
